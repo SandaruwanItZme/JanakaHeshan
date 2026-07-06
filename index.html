@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Janaka Heshan — Digital Artisan | Web Developer & Hardware Technician, Sri Lanka</title>
+  <meta name="description" content="Janaka Heshan is a Computer Hardware Technician & Web Developer based in Kegalle, Sri Lanka. Building resilient websites and repairing the machines that run them.">
+  <meta name="keywords" content="Janaka Heshan, Web Developer Sri Lanka, Hardware Technician Kegalle, Freelance Developer, PC Repair Sri Lanka, Discord Bot Developer">
+  <meta name="author" content="Janaka Heshan">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://janakaheshan.dev/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Janaka Heshan — Digital Artisan">
+  <meta property="og:description" content="Computer Hardware Technician & Web Developer from Kegalle, Sri Lanka. I build things that work — in silicon and in code.">
+  <meta property="og:image" content="https://janakaheshan.dev/assets/img/og-cover.jpg">
+  <meta property="og:url" content="https://janakaheshan.dev/">
+  <meta property="og:site_name" content="Janaka Heshan Portfolio">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Janaka Heshan — Digital Artisan">
+  <meta name="twitter:description" content="Computer Hardware Technician & Web Developer from Kegalle, Sri Lanka.">
+  <meta name="twitter:image" content="https://janakaheshan.dev/assets/img/og-cover.jpg">
+
+  <!-- PWA -->
+  <meta name="theme-color" content="#0a0e14">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Janaka Heshan",
+    "jobTitle": ["Web Developer", "Computer Hardware Technician"],
+    "url": "https://janakaheshan.dev/",
+    "email": "mailto:heshanmd.ml@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kegalle",
+      "addressCountry": "LK"
+    },
+    "knowsAbout": ["Web Development", "Computer Hardware Repair", "Networking", "JavaScript", "Java", "Node.js"],
+    "sameAs": [
+      "https://github.com/janakaheshan",
+      "https://linkedin.com/in/janakaheshan"
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Skip link for accessibility -->
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <!-- ===== Loading Screen ===== -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-inner">
+      <svg class="loader-glyph" viewBox="0 0 64 64" fill="none">
+        <path d="M32 4 L32 20" stroke="var(--copper)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="32" cy="32" r="12" stroke="var(--circuit-cyan)" stroke-width="2"/>
+        <path d="M32 44 L32 60 M4 32 L20 32 M44 32 L60 32" stroke="var(--copper)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="32" cy="32" r="3" fill="var(--gold-solder)"/>
+      </svg>
+      <p class="loader-text">BOOTING<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+      <div class="loader-bar"><span id="loaderProgress"></span></div>
+    </div>
+  </div>
+
+  <!-- ===== Scroll progress / circuit trace ===== -->
+  <div class="trace-rail" aria-hidden="true">
+    <svg class="trace-line" viewBox="0 0 4 1000" preserveAspectRatio="none">
+      <line x1="2" y1="0" x2="2" y2="1000" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+      <line id="traceProgress" x1="2" y1="0" x2="2" y2="0" stroke="url(#traceGrad)" stroke-width="2"/>
+      <defs>
+        <linearGradient id="traceGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#4dd8c4"/>
+          <stop offset="100%" stop-color="#b87333"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="trace-node" id="traceNode"></div>
+  </div>
+
+  <!-- ===== Particle Canvas Background ===== -->
+  <canvas id="particleCanvas" aria-hidden="true"></canvas>
+
+  <!-- ===== Custom Cursor ===== -->
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+  <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+  <!-- ===== Navigation ===== -->
+  <header class="site-header" id="siteHeader">
+    <nav class="navbar" aria-label="Primary">
+      <a href="#home" class="logo" aria-label="Janaka Heshan — home">
+        <span class="logo-mark">JH</span>
+        <span class="logo-text">Janaka<em>.dev</em></span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu" aria-label="Toggle navigation menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#about" class="nav-link"><span class="nav-idx">01</span>About</a></li>
+        <li><a href="#skills" class="nav-link"><span class="nav-idx">02</span>Skills</a></li>
+        <li><a href="#services" class="nav-link"><span class="nav-idx">03</span>Services</a></li>
+        <li><a href="#projects" class="nav-link"><span class="nav-idx">04</span>Work</a></li>
+        <li><a href="#experience" class="nav-link"><span class="nav-idx">05</span>Path</a></li>
+        <li><a href="#contact" class="nav-link nav-cta"><span class="nav-idx">06</span>Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== Hero ===== -->
+    <section id="home" class="hero">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <p class="eyebrow" data-reveal><span class="led"></span>Kegalle, Sri Lanka · Available for work</p>
+        <h1 class="hero-title" data-reveal>
+          <span class="hero-title-line">I'm Janaka Heshan,</span>
+          <span class="hero-title-line hero-title-accent">a Digital Artisan.</span>
+        </h1>
+        <p class="hero-role" data-reveal>
+          <span class="mono-tag">&lt;role&gt;</span>
+          <span id="typedRole" class="typed-role"></span><span class="typed-cursor">|</span>
+          <span class="mono-tag">&lt;/role&gt;</span>
+        </p>
+        <p class="hero-desc" data-reveal>
+          I repair the machines and build the software that runs on them. Ten fingers,
+          two crafts — soldering irons by day, semicolons by night — all from a small
+          workshop in Kegalle, Sri Lanka.
+        </p>
+        <div class="hero-actions" data-reveal>
+          <a href="#projects" class="btn btn-primary">
+            <span>View My Work</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-ghost">
+            <span>Hire Me</span>
+          </a>
+        </div>
+        <div class="hero-meta" data-reveal>
+          <a href="mailto:heshanmd.ml@gmail.com" class="hero-meta-item">heshanmd.ml@gmail.com</a>
+          <span class="hero-meta-sep">/</span>
+          <span class="hero-meta-item">PC Repair · Web Dev · Networking</span>
+        </div>
+      </div>
+      <a href="#about" class="scroll-hint" aria-label="Scroll to About section">
+        <span>Scroll</span>
+        <span class="scroll-hint-line"></span>
+      </a>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section id="about" class="section">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>About</p>
+        <h2 class="section-title">Two crafts, one obsession: <span class="text-accent">things that work.</span></h2>
+
+        <div class="about-grid">
+          <div class="about-copy" data-reveal>
+            <p>
+              I started out with a screwdriver, not a keyboard. Long before I wrote my first
+              line of code, I was pulling apart old desktops in Kegalle to figure out why they
+              wouldn't boot — reseating RAM, replacing thermal paste, chasing dead capacitors
+              across motherboards that everyone else had given up on.
+            </p>
+            <p>
+              That instinct — trace the fault, isolate the variable, fix the real problem —
+              turned out to be exactly the mindset web development rewards. Today I split my
+              time between hardware diagnostics and building fast, resilient websites for
+              small businesses and freelancers who need someone who understands both the
+              server and the box it's plugged into.
+            </p>
+            <p>
+              I care about systems that hold up under real use: a PC that survives a monsoon
+              power cut, a website that loads in under a second on a shared 4G connection.
+              That's the standard I build to.
+            </p>
+            <div class="about-facts">
+              <div class="about-fact">
+                <span class="about-fact-label">Based in</span>
+                <span class="about-fact-value">Kegalle, Sri Lanka</span>
+              </div>
+              <div class="about-fact">
+                <span class="about-fact-label">Focus</span>
+                <span class="about-fact-value">Hardware + Web</span>
+              </div>
+              <div class="about-fact">
+                <span class="about-fact-label">Available for</span>
+                <span class="about-fact-value">Freelance &amp; contract</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-panel glass" data-reveal>
+            <h3 class="about-panel-title">Core Toolkit</h3>
+            <ul class="about-chip-list">
+              <li>JavaScript</li><li>Node.js</li><li>HTML5</li><li>CSS3</li>
+              <li>Java</li><li>Networking</li><li>Git &amp; GitHub</li>
+              <li>Hardware Diagnostics</li><li>Discord.js</li>
+            </ul>
+            <div class="about-panel-divider"></div>
+            <h3 class="about-panel-title">Currently</h3>
+            <p class="about-panel-note">Building custom Discord bots and repairing motherboards for local clients around Kegalle — usually in the same week.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Skills ===== -->
+    <section id="skills" class="section section-alt">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>Skills</p>
+        <h2 class="section-title">Proficiency, <span class="text-accent">measured honestly.</span></h2>
+        <p class="section-lead" data-reveal>Every bar below reflects hands-on, paid or shipped experience — not a checklist.</p>
+
+        <div class="skills-grid">
+          <div class="skill-col" data-reveal>
+            <h3 class="skill-col-title">Software</h3>
+            <div class="skill-bar" data-level="92">
+              <div class="skill-bar-top"><span>Web Development</span><span class="skill-pct">92%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="88">
+              <div class="skill-bar-top"><span>JavaScript</span><span class="skill-pct">88%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="85">
+              <div class="skill-bar-top"><span>HTML</span><span class="skill-pct">85%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="82">
+              <div class="skill-bar-top"><span>CSS</span><span class="skill-pct">82%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="78">
+              <div class="skill-bar-top"><span>Node.js</span><span class="skill-pct">78%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="70">
+              <div class="skill-bar-top"><span>Java</span><span class="skill-pct">70%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+          </div>
+
+          <div class="skill-col" data-reveal>
+            <h3 class="skill-col-title">Hardware &amp; Systems</h3>
+            <div class="skill-bar" data-level="94">
+              <div class="skill-bar-top"><span>Hardware Repair</span><span class="skill-pct">94%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="80">
+              <div class="skill-bar-top"><span>Networking</span><span class="skill-pct">80%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+            <div class="skill-bar" data-level="86">
+              <div class="skill-bar-top"><span>Git &amp; GitHub</span><span class="skill-pct">86%</span></div>
+              <div class="skill-track"><div class="skill-fill"></div></div>
+            </div>
+
+            <h3 class="skill-col-title skill-col-title-spaced">Signature Build</h3>
+            <div class="skill-radial-wrap">
+              <svg class="skill-radial" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" class="radial-track"/>
+                <circle cx="60" cy="60" r="50" class="radial-fill" id="radialFill"/>
+              </svg>
+              <div class="skill-radial-label">
+                <strong id="radialNum">0%</strong>
+                <span>Client<br>Satisfaction</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Services ===== -->
+    <section id="services" class="section">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>Services</p>
+        <h2 class="section-title">What I can <span class="text-accent">fix, build, or ship.</span></h2>
+
+        <div class="services-grid">
+          <article class="service-card glass" data-reveal>
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M8 20h8M12 16v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <h3>PC Repair &amp; Troubleshooting</h3>
+            <p>Diagnosing boot failures, blue screens, overheating and performance issues — then actually fixing the cause, not just the symptom.</p>
+          </article>
+
+          <article class="service-card glass" data-reveal>
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Website Development</h3>
+            <p>Fast, responsive, SEO-ready websites and web apps built from scratch — from landing pages to full client platforms.</p>
+          </article>
+
+          <article class="service-card glass" data-reveal>
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M9 3v4M15 3v4M4 8h16v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <h3>Hardware Diagnostics</h3>
+            <p>Component-level testing for RAM, PSU, storage and motherboards using proper bench tools — not guesswork swaps.</p>
+          </article>
+
+          <article class="service-card glass" data-reveal>
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Software Installation</h3>
+            <p>Clean OS installs, driver setup, and software environments configured properly the first time, with no leftover bloat.</p>
+          </article>
+
+          <article class="service-card glass" data-reveal>
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M9 10h.01M15 10h.01M8.5 15c1 1 2 1.5 3.5 1.5s2.5-.5 3.5-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Discord Bot Development</h3>
+            <p>Custom Discord bots with moderation, automation, and integrations built with Discord.js and Node.js.</p>
+          </article>
+
+          <article class="service-card glass" data-reveal>
+            <div class="service-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <h3>Technical Support</h3>
+            <p>Ongoing remote or on-site support for individuals and small businesses who need a reliable go-to person for "it's broken."</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Projects ===== -->
+    <section id="projects" class="section section-alt">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>Selected Work</p>
+        <h2 class="section-title">Things I've <span class="text-accent">shipped.</span></h2>
+
+        <div class="filter-bar" role="tablist" aria-label="Filter projects by category">
+          <button class="filter-btn is-active" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter-btn" data-filter="web" role="tab" aria-selected="false">Web</button>
+          <button class="filter-btn" data-filter="bot" role="tab" aria-selected="false">Bots</button>
+          <button class="filter-btn" data-filter="hardware" role="tab" aria-selected="false">Hardware Tools</button>
+        </div>
+
+        <div class="projects-grid" id="projectsGrid"><!-- injected by script.js --></div>
+
+        <p class="github-note" data-reveal>
+          Project list syncs from <a href="https://github.com/janakaheshan" target="_blank" rel="noopener">github.com/janakaheshan</a> when available, and falls back to the list above offline.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===== Experience Timeline ===== -->
+    <section id="experience" class="section">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>Path</p>
+        <h2 class="section-title">How I got <span class="text-accent">here.</span></h2>
+
+        <ol class="timeline">
+          <li class="timeline-item" data-reveal>
+            <div class="timeline-dot"></div>
+            <span class="timeline-year">2019</span>
+            <h3>First soldering iron</h3>
+            <p>Started repairing neighbours' desktops and laptops in Kegalle — no formal training, just persistence and a multimeter.</p>
+          </li>
+          <li class="timeline-item" data-reveal>
+            <div class="timeline-dot"></div>
+            <span class="timeline-year">2021</span>
+            <h3>Hardware technician, freelance</h3>
+            <p>Went full freelance on hardware diagnostics and repair — motherboard-level faults, data recovery, and networking setups for local clients.</p>
+          </li>
+          <li class="timeline-item" data-reveal>
+            <div class="timeline-dot"></div>
+            <span class="timeline-year">2022</span>
+            <h3>Taught myself web development</h3>
+            <p>Picked up HTML, CSS and JavaScript to build tools for tracking repair jobs — then kept going into full front-end and back-end work.</p>
+          </li>
+          <li class="timeline-item" data-reveal>
+            <div class="timeline-dot"></div>
+            <span class="timeline-year">2023</span>
+            <h3>First client websites &amp; Discord bots</h3>
+            <p>Delivered first paid websites for small businesses, alongside custom Discord bots for gaming and study communities.</p>
+          </li>
+          <li class="timeline-item" data-reveal>
+            <div class="timeline-dot"></div>
+            <span class="timeline-year">Now</span>
+            <h3>Full-stack &amp; full-toolbox</h3>
+            <p>Running both practices in parallel: web development projects during the week, hardware call-outs whenever Kegalle needs them.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== Stats ===== -->
+    <section class="section stats-section">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat-item" data-reveal>
+            <span class="stat-num" data-count="60">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Projects Completed</span>
+          </div>
+          <div class="stat-item" data-reveal>
+            <span class="stat-num" data-count="45">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Clients Served</span>
+          </div>
+          <div class="stat-item" data-reveal>
+            <span class="stat-num" data-count="4">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Years of Experience</span>
+          </div>
+          <div class="stat-item" data-reveal>
+            <span class="stat-num" data-count="120">0</span><span class="stat-plus">+</span>
+            <span class="stat-label">Devices Repaired</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Testimonials ===== -->
+    <section id="testimonials" class="section section-alt">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>Word of Mouth</p>
+        <h2 class="section-title">What <span class="text-accent">clients say.</span></h2>
+
+        <div class="testimonial-slider" data-reveal>
+          <div class="testimonial-track" id="testimonialTrack">
+            <blockquote class="testimonial-card">
+              <p>"My shop's PCs were crashing weekly. Janaka found a failing PSU nobody else even tested for. Hasn't gone down since."</p>
+              <footer><strong>Nimal Perera</strong><span>Small Business Owner, Kegalle</span></footer>
+            </blockquote>
+            <blockquote class="testimonial-card">
+              <p>"He rebuilt our clinic's booking site in under two weeks and it's genuinely faster than what we paid a big agency for before."</p>
+              <footer><strong>Dr. S. Fernando</strong><span>Clinic Owner</span></footer>
+            </blockquote>
+            <blockquote class="testimonial-card">
+              <p>"The Discord bot he built handles our whole community's moderation now. Clean code, and he still answers questions months later."</p>
+              <footer><strong>Ravindu K.</strong><span>Community Manager</span></footer>
+            </blockquote>
+            <blockquote class="testimonial-card">
+              <p>"Rare to find someone who understands both the hardware and the website running on it. Fixed my server and my site in the same visit."</p>
+              <footer><strong>Chathura W.</strong><span>Freelance Photographer</span></footer>
+            </blockquote>
+          </div>
+          <div class="testimonial-controls">
+            <button id="testPrev" aria-label="Previous testimonial">&larr;</button>
+            <div class="testimonial-dots" id="testimonialDots"></div>
+            <button id="testNext" aria-label="Next testimonial">&rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Contact ===== -->
+    <section id="contact" class="section">
+      <div class="container">
+        <p class="section-eyebrow"><span class="led"></span>Contact</p>
+        <h2 class="section-title">Let's fix or build <span class="text-accent">something.</span></h2>
+
+        <div class="contact-grid">
+          <div class="contact-info" data-reveal>
+            <p class="contact-lead">Have a broken machine or an idea for a site? Tell me about it — I reply within a day, usually faster.</p>
+            <a class="contact-detail" href="mailto:heshanmd.ml@gmail.com">
+              <span class="contact-detail-label">Email</span>
+              <span class="contact-detail-value">heshanmd.ml@gmail.com</span>
+            </a>
+            <div class="contact-detail">
+              <span class="contact-detail-label">Location</span>
+              <span class="contact-detail-value">Kegalle, Sri Lanka</span>
+            </div>
+            <div class="social-row">
+              <a href="https://github.com/janakaheshan" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.9 5.3.9 11.6c0 5 3.2 9.3 7.8 10.8.6.1.8-.3.8-.6v-2.1c-3.2.7-3.8-1.4-3.8-1.4-.5-1.3-1.3-1.6-1.3-1.6-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11 11 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.8-5.8 7.8-10.8C23.1 5.3 18.3.5 12 .5Z"/></svg>
+              </a>
+              <a href="https://linkedin.com/in/janakaheshan" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM.5 8.98h9v14.5h-9v-14.5ZM8.5 8.98h8.6v2h.1c1.2-2.1 4.1-2.2 5.5-.1 1.4 2 1.3 4 1.3 6.3v6.3h-4.5v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7h-4.5V8.98Z"/></svg>
+              </a>
+              <a href="mailto:heshanmd.ml@gmail.com" aria-label="Email" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13Zm2.2.3 7.8 6.2 7.8-6.2H4.2ZM20 7.9l-8 6.3-8-6.3v10.6c0 .3.2.5.5.5h15c.3 0 .5-.2.5-.5V7.9Z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <form id="contactForm" class="contact-form glass" novalidate data-reveal>
+            <div class="form-row">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required minlength="2">
+              <span class="form-error" id="nameError"></span>
+            </div>
+            <div class="form-row">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="you@example.com" required>
+              <span class="form-error" id="emailError"></span>
+            </div>
+            <div class="form-row">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" placeholder="What's this about?" required minlength="3">
+              <span class="form-error" id="subjectError"></span>
+            </div>
+            <div class="form-row">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell me about the job or project..." required minlength="10"></textarea>
+              <span class="form-error" id="messageError"></span>
+            </div>
+            <!-- honeypot field for basic spam protection -->
+            <input type="text" name="company" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary btn-block" id="submitBtn">
+              <span>Send Message</span>
+            </button>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo-mark">JH</span>
+        <p>Janaka Heshan — building and repairing, one board at a time.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#services">Services</a>
+        <a href="#projects">Work</a>
+        <a href="#experience">Path</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <p class="footer-copy">&copy; <span id="year"></span> Janaka Heshan. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 14V4M4 8l5-5 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
+  <script src="js/script.js" defer></script>
+</body>
+</html>

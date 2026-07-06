@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Signal Lost | Janaka Heshan</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --void: #0a0e14; --copper: #b87333; --copper-bright: #d98d4a;
+      --circuit-cyan: #4dd8c4; --gold-solder: #e8b04b;
+      --text-primary: #e8edf2; --text-muted: #8b95a5; --border: rgba(232,237,242,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--void); color: var(--text-primary);
+      font-family: 'IBM Plex Mono', monospace;
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; text-align: center; padding: 24px;
+    }
+    .code {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+      font-size: clamp(4rem, 18vw, 9rem); line-height: 1;
+      background: linear-gradient(100deg, var(--copper-bright), var(--gold-solder), var(--circuit-cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    h1 { font-family: 'Space Grotesk', sans-serif; font-size: 1.4rem; margin-top: 18px; }
+    p { color: var(--text-muted); margin-top: 12px; max-width: 420px; font-size: 0.95rem; }
+    a {
+      display: inline-flex; margin-top: 34px; padding: 14px 28px; border-radius: 40px;
+      background: linear-gradient(135deg, var(--copper-bright), var(--copper));
+      color: #10090a; text-decoration: none; font-weight: 600; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.9rem;
+    }
+    .trace { width: 2px; height: 60px; background: linear-gradient(var(--circuit-cyan), transparent); margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <p style="letter-spacing:0.2em; color:var(--circuit-cyan); font-size:0.75rem;">ERR_TRACE_BROKEN</p>
+  <div class="code">404</div>
+  <h1>This connection doesn't lead anywhere.</h1>
+  <p>The page you're looking for has been unplugged, moved, or never existed on this board. Let's get you back to a working circuit.</p>
+  <a href="/index.html">Return to homepage</a>
+  <div class="trace"></div>
+</body>
+</html>
