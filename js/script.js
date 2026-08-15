@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   document.getElementById('year').textContent = new Date().getFullYear();
   registerServiceWorker();
+  trackPageView();
 });
 
 /* ---------------------------------------------------------
@@ -508,11 +509,12 @@ function initTestimonialSlider() {
 
 /* ---------------------------------------------------------
    15. Contact form validation + submission
-   NOTE: This posts to a placeholder endpoint. Swap
-   CONTACT_ENDPOINT for a real backend (see /backend-example)
-   or a form service like Formspree to make it fully live.
+   Posts to the backend in /backend, which validates the
+   message, stores it in the admin inbox, and (if enabled)
+   relays it to Discord. Falls back to opening a mail client
+   if the backend can't be reached at all.
 --------------------------------------------------------- */
-const CONTACT_ENDPOINT = ''; // e.g. 'https://formspree.io/f/your-id'
+const CONTACT_ENDPOINT = '/api/contact';
 
 function initContactForm() {
   const form = document.getElementById('contactForm');
@@ -567,32 +569,35 @@ function initContactForm() {
     const payload = {
       name: fields.name.el.value.trim(),
       email: fields.email.el.value.trim(),
-      subject: fields.subject.el.value.trim(),
-      message: fields.message.el.value.trim(),
+      message: `${fields.subject.el.value.trim()}\n\n${fields.message.el.value.trim()}`,
+      company: form.company.value, // honeypot, mirrored by the backend
     };
 
     submitBtn.disabled = true;
     submitBtn.querySelector('span').textContent = 'Sending...';
 
     try {
-      if (CONTACT_ENDPOINT) {
-        const res = await fetch(CONTACT_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error('Request failed');
-      } else {
-        // No backend configured yet — fall back to opening the user's mail client.
-        const mailto = `mailto:heshanmd.ml@gmail.com?subject=${encodeURIComponent(payload.subject)}&body=${encodeURIComponent(payload.message + '\n\nFrom: ' + payload.name + ' (' + payload.email + ')')}`;
-        window.location.href = mailto;
-      }
+      const res = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Request failed');
       status.textContent = 'Message sent — thanks! I\'ll get back to you soon.';
       status.classList.add('is-success');
       form.reset();
     } catch (err) {
-      status.textContent = 'Something went wrong. Please email me directly instead.';
+      // Backend unreachable or rejected the request — fall back to the user's mail client.
+      const subject = fields.subject.el.value.trim();
+      const mailto = `mailto:heshanmd.ml@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(fields.message.el.value.trim() + '\n\nFrom: ' + fields.name.el.value.trim() + ' (' + fields.email.el.value.trim() + ')')}`;
+      status.textContent = (err.message && err.message !== 'Request failed')
+        ? err.message
+        : 'Could not reach the server — opening your mail app instead.';
       status.classList.add('is-error');
+      if (!(err.message && /disabled|too many|invalid|required|too long/i.test(err.message))) {
+        window.location.href = mailto;
+      }
     } finally {
       submitBtn.disabled = false;
       submitBtn.querySelector('span').textContent = 'Send Message';
@@ -622,4 +627,17 @@ function registerServiceWorker() {
       });
     });
   }
+}
+
+/* ---------------------------------------------------------
+   18. Lightweight analytics beacon
+   Fires once per page load. Silently no-ops if the backend
+   isn't deployed, or if analytics is turned off in Settings.
+--------------------------------------------------------- */
+function trackPageView() {
+  fetch('/api/analytics/track', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path: window.location.pathname, referrer: document.referrer || '' }),
+  }).catch(() => { /* backend not deployed yet, or offline — ignore */ });
 }

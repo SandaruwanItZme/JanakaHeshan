@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Control Panel — Janaka Heshan</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" type="image/svg+xml" href="../assets/icons/favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body data-theme="dark">
+
+  <!-- ===== Login screen ===== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-glyph" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none" width="40" height="40">
+          <path d="M32 4 L32 20" stroke="var(--copper)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="32" cy="32" r="12" stroke="var(--circuit-cyan)" stroke-width="2"/>
+          <path d="M32 44 L32 60 M4 32 L20 32 M44 32 L60 32" stroke="var(--copper)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="32" cy="32" r="3" fill="var(--gold-solder)"/>
+        </svg>
+      </div>
+      <h1>Control Panel</h1>
+      <p class="login-sub">Sign in to manage the site.</p>
+      <form id="loginForm" novalidate>
+        <label class="field">
+          <span>Username</span>
+          <input type="text" name="username" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span>Password</span>
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+        <p id="loginError" class="login-error" role="alert" hidden></p>
+        <button type="submit" class="btn btn-primary btn-block" id="loginSubmit">Sign in</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== App shell ===== -->
+  <div id="app" class="app" hidden>
+    <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <svg viewBox="0 0 64 64" fill="none" width="26" height="26" aria-hidden="true">
+          <circle cx="32" cy="32" r="12" stroke="var(--circuit-cyan)" stroke-width="3"/>
+          <circle cx="32" cy="32" r="3" fill="var(--gold-solder)"/>
+        </svg>
+        <span>Control Panel</span>
+      </div>
+      <nav id="sidebarNav" class="sidebar-nav" aria-label="Dashboard sections">
+        <button class="nav-item" data-route="overview">Overview</button>
+        <button class="nav-item" data-route="profile">Profile</button>
+        <button class="nav-item" data-route="projects">Projects</button>
+        <button class="nav-item" data-route="skills">Skills</button>
+        <button class="nav-item" data-route="experience">Experience</button>
+        <button class="nav-item" data-route="education">Education</button>
+        <button class="nav-item" data-route="messages">Messages <span id="navMsgBadge" class="nav-badge" hidden>0</span></button>
+        <button class="nav-item" data-route="analytics">Analytics</button>
+        <button class="nav-item" data-route="settings">Settings</button>
+        <button class="nav-item" data-route="appearance">Appearance</button>
+        <button class="nav-item" data-route="activity">Activity Log</button>
+      </nav>
+      <div class="sidebar-foot">
+        <button id="logoutBtn" class="nav-item nav-item-danger">Log out</button>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <h2 id="pageTitle">Overview</h2>
+        <div class="topbar-actions">
+          <button id="themeToggle" class="icon-btn" aria-label="Toggle dark/light mode" title="Toggle theme">🌓</button>
+          <div class="notif-wrap">
+            <button id="notifBtn" class="icon-btn" aria-label="Notifications" title="Notifications">
+              🔔<span id="notifBadge" class="notif-badge" hidden>0</span>
+            </button>
+            <div id="notifPanel" class="notif-panel" hidden></div>
+          </div>
+          <span id="whoami" class="whoami"></span>
+        </div>
+      </header>
+      <main id="content" class="content" aria-live="polite">
+        <!-- Rendered by admin.js -->
+      </main>
+    </div>
+  </div>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <div id="modalRoot"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
